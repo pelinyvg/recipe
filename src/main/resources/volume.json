@@ -1,0 +1,13 @@
+[
+  {
+    "name": "tablespoon",
+    "abbreviation": "tbsp",
+    "liter": 0.0147868
+  },
+  {
+    "name": "teaspoon",
+    "abbreviation": "tsp",
+    "liter": 0.00492892
+  }
+
+]

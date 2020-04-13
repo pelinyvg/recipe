@@ -1,0 +1,17 @@
+[
+  {
+    "name": "pound",
+    "abbreviation": "lb",
+    "kilogram": 0.453592
+  },
+  {
+    "name": "ounce",
+    "abbreviation": "oz",
+    "kilogram": 0.0283495
+  },
+  {
+    "name": "kilogram",
+    "abbreviation": "kg",
+    "kilogram": 1
+  }
+]

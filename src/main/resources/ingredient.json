@@ -1,0 +1,12 @@
+[
+  {
+    "name": "water",
+    "density": 1,
+    "type": "LIQUID"
+  },
+  {
+    "name": "flour",
+    "density": 0.59,
+    "type": "SOLID"
+  }
+]
