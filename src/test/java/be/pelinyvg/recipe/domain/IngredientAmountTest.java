@@ -1,8 +1,5 @@
 package be.pelinyvg.recipe.domain;
 
-import be.pelinyvg.recipe.repository.IngredientRepository;
-import be.pelinyvg.recipe.repository.MassUnitRepository;
-import be.pelinyvg.recipe.repository.VolumeUnitRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +7,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IngredientAmountTest {
+public class IngredientAmountTest extends DomainTest {
 
     private static final String INGREDIENT = "flour";
     private static final String ABBREVIATION = "kg";
@@ -19,16 +16,11 @@ public class IngredientAmountTest {
     private static final String VOLUME_CONVERTED_UNIT = "tablespoon";
 
     private IngredientAmount flourAmount;
-    private IngredientRepository ingredientRepository;
-    private MassUnitRepository massUnitRepository;
-    private VolumeUnitRepository volumeUnitRepository;
 
+    @Override
     @BeforeEach
     void setUp() throws IOException {
-        ingredientRepository = new IngredientRepository();
-        massUnitRepository = new MassUnitRepository();
-        volumeUnitRepository = new VolumeUnitRepository();
-
+        super.setUp();
         Ingredient foundIngredient = ingredientRepository.findByName(INGREDIENT);
         MassUnit foundUnit = massUnitRepository.findByAbbreviation(ABBREVIATION);
 
