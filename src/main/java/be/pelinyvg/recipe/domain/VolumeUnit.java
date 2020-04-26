@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class VolumeUnit implements Unit {
+
+    public static final VolumeUnit LITER = new VolumeUnit("liter", "l", 1);
+
     private final String name;
     private final String abbreviation;
     private final double liter;
@@ -27,6 +30,21 @@ public class VolumeUnit implements Unit {
     @Override
     public String getAbbreviation() {
         return abbreviation;
+    }
+
+    @Override
+    public UnitType getType() {
+        return UnitType.VOLUME;
+    }
+
+    @Override
+    public double getBaseValue() {
+        return liter;
+    }
+
+    @Override
+    public Unit getDefaultUnit() {
+        return LITER;
     }
 
     public double getLiter() {

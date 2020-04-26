@@ -13,6 +13,14 @@ public class IngredientAmount {
         this.unit = unit;
     }
 
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
     public double getAmount() {
         return amount;
     }
@@ -39,5 +47,40 @@ public class IngredientAmount {
                 ", amount=" + amount +
                 ", unit=" + unit +
                 '}';
+    }
+
+    public IngredientAmount normalize() {
+        return new IngredientAmount(
+                ingredient,
+                amount * this.unit.getBaseValue(),
+                this.unit.getDefaultUnit()
+        );
+    }
+
+    public IngredientAmount convert(Unit toConvertUnit) {
+        IngredientAmount normalized = this.normalize();
+        if (toConvertUnit.getType().equals(normalized.getUnit().getType())){
+            return new IngredientAmount(
+                    ingredient,
+                    normalized.getAmount() / toConvertUnit.getBaseValue(),
+                    toConvertUnit
+            );
+        } else {
+            if(normalized.getUnit().getType().equals(UnitType.MASS) && toConvertUnit.getType().equals(UnitType.VOLUME)){
+                return new IngredientAmount(
+                        ingredient,
+                        (normalized.getAmount() / ingredient.getDensity()) / toConvertUnit.getBaseValue() ,
+                        toConvertUnit
+                );
+            }
+            if(normalized.getUnit().getType().equals(UnitType.VOLUME) && toConvertUnit.getType().equals(UnitType.MASS)){
+                return new IngredientAmount(
+                        ingredient,
+                        (normalized.getAmount() * ingredient.getDensity()) / toConvertUnit.getBaseValue() ,
+                        toConvertUnit
+                );
+            }
+        }
+        throw new IllegalArgumentException("Can't convert ingredient amount");
     }
 }

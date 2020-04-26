@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class MassUnit implements Unit {
+
+    public static final MassUnit KILOGRAM = new MassUnit("kilogram", "kg", 1);
+
     private final String name;
     private final String abbreviation;
     private final double kilogram;
@@ -27,6 +30,21 @@ public class MassUnit implements Unit {
     @Override
     public String getAbbreviation() {
         return abbreviation;
+    }
+
+    @Override
+    public UnitType getType() {
+        return UnitType.MASS;
+    }
+
+    @Override
+    public double getBaseValue() {
+        return kilogram;
+    }
+
+    @Override
+    public Unit getDefaultUnit() {
+        return KILOGRAM;
     }
 
     public double getKilogram() {
