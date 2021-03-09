@@ -10,14 +10,15 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static be.pelinyvg.recipe.util.JsonUtilities.readJson;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonUtilitiesTest {
     @Test
     void shouldReadIngredientsJson() throws Exception {
-        Set<Ingredient> ingredients = readJson("ingredient.json", new TypeReference<Set<Ingredient>>() {
+        Set<Ingredient> ingredients = readJson("ingredient.json", new TypeReference<>() {
         });
-        
+
         // Then the example is contained in the result
         Ingredient example = new Ingredient("water", 1, MaterialType.LIQUID);
         assertTrue(ingredients.contains(example));
@@ -25,7 +26,7 @@ public class JsonUtilitiesTest {
 
     @Test
     void shouldReadMassJson() throws Exception {
-        Set<MassUnit> massUnits = readJson("mass.json", new TypeReference<Set<MassUnit>>() {
+        Set<MassUnit> massUnits = readJson("mass.json", new TypeReference<>() {
         });
 
         // Then the example is contained in the result
@@ -35,11 +36,21 @@ public class JsonUtilitiesTest {
 
     @Test
     void shouldReadVolumeJson() throws Exception {
-        Set<VolumeUnit> volumeUnits = readJson("volume.json", new TypeReference<Set<VolumeUnit>>() {
+        Set<VolumeUnit> volumeUnits = readJson("volume.json", new TypeReference<>() {
         });
 
         // Then the example is contained in the result
         VolumeUnit example = new VolumeUnit("tablespoon", "tbsp", 0.0147868);
         assertTrue(volumeUnits.contains(example));
+    }
+
+    @Test
+    void shouldThrowWhenFileNotFound() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> readJson("doesntexist.json", new TypeReference<>() {
+                }),
+                "Could not find resource with filename doesntexist.json"
+        );
     }
 }

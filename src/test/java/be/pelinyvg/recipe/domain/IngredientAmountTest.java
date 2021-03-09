@@ -8,16 +8,15 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IngredientAmountTest {
 
-    private static final String INGREDIENT = "flour";
-    private static final String ABBREVIATION = "kg";
-
-    private static final String MASS_CONVERTED_UNIT = "pound";
-    private static final String VOLUME_CONVERTED_UNIT = "tablespoon";
-
+    public static final String WATER = "water";
+    private static final String FLOUR = "flour";
+    private static final String KILOGRAM_ABBREVIATION = "kg";
+    private static final String POUND = "pound";
+    private static final String TABLESPOON = "tablespoon";
     private IngredientAmount flourAmount;
     private IngredientRepository ingredientRepository;
     private MassUnitRepository massUnitRepository;
@@ -29,15 +28,15 @@ public class IngredientAmountTest {
         massUnitRepository = new MassUnitRepository();
         volumeUnitRepository = new VolumeUnitRepository();
 
-        Ingredient foundIngredient = ingredientRepository.findByName(INGREDIENT);
-        MassUnit foundUnit = massUnitRepository.findByAbbreviation(ABBREVIATION);
+        Ingredient foundIngredient = ingredientRepository.findByName(FLOUR);
+        MassUnit foundUnit = massUnitRepository.findByAbbreviation(KILOGRAM_ABBREVIATION);
 
         flourAmount = new IngredientAmount(foundIngredient, 1, foundUnit);
     }
 
     @Test
-    void shouldConvertMass() throws Exception {
-        MassUnit toConvertUnit = massUnitRepository.findByName(MASS_CONVERTED_UNIT);
+    void shouldConvertMass() {
+        MassUnit toConvertUnit = massUnitRepository.findByName(POUND);
         IngredientAmount convertedAmount = flourAmount.convert(toConvertUnit);
 
         assertEquals(flourAmount.getIngredient(), convertedAmount.getIngredient());
@@ -46,8 +45,16 @@ public class IngredientAmountTest {
     }
 
     @Test
-    void shouldConvertVolume() throws Exception {
-        VolumeUnit toConvertUnit = volumeUnitRepository.findByName(VOLUME_CONVERTED_UNIT);
+    void shouldReturnSameObjectWhenConvertingSameUnit() {
+        IngredientAmount convertedAmount = flourAmount.convert(flourAmount.getUnit());
+
+        assertSame(flourAmount, convertedAmount);
+
+    }
+
+    @Test
+    void shouldConvertVolume() {
+        VolumeUnit toConvertUnit = volumeUnitRepository.findByName(TABLESPOON);
         IngredientAmount convertedAmount = flourAmount.convert(toConvertUnit);
 
         assertEquals(flourAmount.getIngredient(), convertedAmount.getIngredient());
@@ -55,5 +62,31 @@ public class IngredientAmountTest {
         assertEquals(127.81682919914316, convertedAmount.getAmount());
     }
 
+    @Test
+    void shouldScaleWithRatio() {
+        IngredientAmount scaled = flourAmount.scale(2);
 
+        assertEquals(flourAmount.getIngredient(), scaled.getIngredient());
+        assertEquals(flourAmount.getUnit(), scaled.getUnit());
+        assertEquals(2, scaled.getAmount());
+    }
+
+    @Test
+    void shouldReturnRatio() {
+        VolumeUnit tablespoon = volumeUnitRepository.findByName(TABLESPOON);
+        IngredientAmount amountAvailable = new IngredientAmount(flourAmount.getIngredient(), 50, tablespoon);
+
+        assertEquals(0.391184794, flourAmount.getRatio(amountAvailable));
+    }
+
+    @Test
+    void shouldThrowExceptionIfIngredientNotSame() {
+        Ingredient water = ingredientRepository.findByName(WATER);
+        VolumeUnit tablespoon = volumeUnitRepository.findByName(TABLESPOON);
+        IngredientAmount amountAvailable = new IngredientAmount(water, 50, tablespoon);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> flourAmount.getRatio(amountAvailable),
+                "Can't find the ratio between different ingredients flour and water");
+    }
 }
